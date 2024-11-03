@@ -261,15 +261,6 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 					$tx3=0.48;
 					break;
 					
-				case $year  == "2019":
-				case $year  == "2020":
-					$tx1=23.7;
-					$tx1_1=22;
-					$tx1_2=1.7;
-					$tx2=0.30;
-					$tx3=0.00;
-					break;
-
 				case $year  == "2018":
 					switch($month)
 					{
@@ -312,6 +303,16 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 					}
 					break;
 					
+			
+				case $year  == "2019":
+				case $year  == "2020":
+					$tx1=23.7;
+					$tx1_1=22;
+					$tx1_2=1.7;
+					$tx2=0.30;
+					$tx3=0.00;
+					break;
+					
 				case $year  == "2021":
 					$tx1=23.7;
 					$tx1_1=22;
@@ -351,6 +352,7 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 					break;
 					
 				case $year  == "2023":
+				case $year  == "2024":				
 					$tx1=22.9;
 					$tx1_1=21.2;
 					$tx1_2=1.7;
@@ -358,43 +360,14 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 					$tx3=0.48;
 					break;
 				
-				case $year  == "2024":
-					switch($month)
-					{
-						case "01":
-						case "02":
-						case "03":
-						case "04":
-						case "05":
-						case "06":
-						case "07":
-						case "08":
-						case "09":
-							$tx1=22.9;
-							$tx1_1=21.2;
-							$tx1_2=1.7;
-							$tx2=0.30;
-							$tx3=0.48;
-							break;
-						case "10":
-						case "11":
-						case "12":
-							$tx1=24.9;
-							$tx1_1=23.2;
-							$tx1_2=1.7;
-							$tx2=0.30;
-							$tx3=0.48;
-						break;
-					}
-					break;
 
 				case $year  > "2024":
-						$tx1=24.9;
-						$tx1_1=23.2;
-						$tx1_2=1.7;
-						$tx2=0.30;
-						$tx3=0.48;
-						break;
+					$tx1=22.9;
+					$tx1_1=21.2;
+					$tx1_2=1.7;
+					$tx2=0.30;
+					$tx3=0.48;
+					break;
 			}
 			
 			$tot_an_CA=0.0;
@@ -484,23 +457,7 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 							break;
 						}
 					}
-					if ($year  == "2023")
-					{
-							$tx1=22.9;
-							$tx1_1=21.2;
-							$tx1_2=1.7;
-							$tx2=0.30;
-							$tx3=0.48;
-					}
-					if ($year  == "2024")
-					{
-							$tx1=23.7;
-							$tx1_1=22;
-							$tx1_2=1.7;
-							$tx2=0.30;
-							$tx3=0.48;
-					}
-					
+										
 					$tax1=round($mens[$i]*$tx1_1/100)+round($mens[$i]*$tx1_2/100);
 					$tax2=round($mens[$i]*$tx2/100);
 					$tax3=round($mens[$i]*$tx3/100);
@@ -575,22 +532,7 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 							break;
 						}
 					}
-					if ($year  == "2023")
-					{
-							$tx1=22.9;
-							$tx1_1=21.2;
-							$tx1_2=1.7;
-							$tx2=0.30;
-							$tx3=0.48;
-					}
-					if ($year  == "2024")
-					{
-							$tx1=22.9;
-							$tx1_1=21.2;
-							$tx1_2=1.7;
-							$tx2=0.30;
-							$tx3=0.48;
-					}					
+					
 					$j=$i+1;
 					$tax1=round($trim[$i]*$tx1_1/100)+round($trim[$i]*$tx1_2/100);
 					$tax2=round($trim[$i]*$tx2/100);
