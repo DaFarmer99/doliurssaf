@@ -239,7 +239,7 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 			{
 				case $year  == "2008":
 				case $year  == "2009":
-								case $year  == "2010":
+				case $year  == "2010":
 					$tx1=23;
 					$tx1_1=23;
 					$tx1_2=0.00;
@@ -279,12 +279,11 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 					break;
 				case $year  == "2017":
 					$tx1=24.4;
-					$tx1_1=22.7;
-					$tx1_2=1.7;
+					$tx1_1=24.4;
+					$tx1_2=0.0;
 					$tx2=0.30;
 					$tx3=0.48;
 					break;
-					
 				case $year  == "2018":
 					switch($month)
 					{
@@ -292,8 +291,8 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 						case "02":
 						case "03":
 							$tx1=23.7;
-							$tx1_1=22;
-							$tx1_2=1.7;
+							$tx1_1=23.7;
+							$tx1_2=0.0;
 							$tx2=0.30;
 							$tx3=0.48;
 							break;						
@@ -319,16 +318,20 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 						case "11":
 						case "12":
 							$tx1=23.7;
-							$tx1_1=22.0;
-							$tx1_2=1.7;
+							$tx1_1=23.7;
+							$tx1_2=0.0;
 							$tx2=0.30;
 							$tx3=0.48;
 							break;
 					}
 					break;
-					
-			
 				case $year  == "2019":
+					$tx1=23.7;
+					$tx1_1=23.7;
+					$tx1_2=0.0;
+					$tx2=0.30;
+					$tx3=0.00;
+					break;
 				case $year  == "2020":
 					$tx1=23.7;
 					$tx1_1=22;
@@ -336,11 +339,10 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 					$tx2=0.30;
 					$tx3=0.00;
 					break;
-					
 				case $year  == "2021":
 					$tx1=23.7;
-					$tx1_1=22;
-					$tx1_2=1.7;
+					$tx1_1=23.7;
+					$tx1_2=0.0;
 					$tx2=0.30;
 					$tx3=0.48;
 					break;
@@ -376,14 +378,14 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 					break;
 					
 				case $year  == "2023":
-				case $year  == "2024":				
+				case $year  == "2024":
 					$tx1=22.9;
 					$tx1_1=21.2;
 					$tx1_2=1.7;
 					$tx2=0.30;
 					$tx3=0.48;
 					break;
-				
+
 
 				case $year  > "2024":
 					$tx1=22.9;
@@ -417,8 +419,8 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 						case 2:
 						case 3:
 							$tx1=23.7;
-							$tx1_1=22;
-							$tx1_2=1.7;
+							$tx1_1=23.7;
+							$tx1_2=0.0;
 							$tx2=0.30;
 							$tx3=0.48;
 							break;						
@@ -444,8 +446,8 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 						case 11:
 						case 12:
 							$tx1=23.7;
-							$tx1_1=22.0;
-							$tx1_2=1.7;
+							$tx1_1=23.7;
+							$tx1_2=0.0;
 							$tx2=0.30;
 							$tx3=0.48;
 							break;
@@ -482,15 +484,15 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 						}
 					}
 										
-					$tax1=round($mens[$i]*$tx1_1/100)+round($mens[$i]*$tx1_2/100);
-					$tax2=round($mens[$i]*$tx2/100);
-					$tax3=round($mens[$i]*$tx3/100);
+					$tax1=round($mens[$i]*$tx1_1/100, 2)+round($mens[$i]*$tx1_2/100, 2);
+					$tax2=round($mens[$i]*$tx2/100, 2);
+					$tax3=round($mens[$i]*$tx3/100, 2);
 					$tot_an_tax1+=$tax1;
 					$tot_an_tax2+=$tax2;
 					$tot_an_tax3+=$tax3;
 					$tot_an_CA+=$mens[$i];
 					$tot_an_four+=$mens_four[$i];
-					print '<tr class="oddeven"><td class="left">'.$month_names[$i-1].'</td><td colspan="1" class="right"><b>'.price($mens[$i]).'</b></td><td class="right">'.round($tax1).'</td><td class="right">'.round($tax2).'</td><td class="right">'.round($tax3).'</td><td class="right"><b>'.round($tax1+$tax2+$tax3).'</b></td><td class="right">'.price($mens_four[$i]).'</td><td class="right"><i>'.price($mens[$i]-$tax1-$tax2-$tax3-$mens_four[$i]).'</i></td></tr>';
+					print '<tr class="oddeven"><td class="left">'.$month_names[$i-1].'</td><td colspan="1" class="right"><b>'.price($mens[$i]).'</b></td><td class="right">'.round($tax1, 2).'</td><td class="right">'.round($tax2, 2).'</td><td class="right">'.round($tax3, 2).'</td><td class="right"><b>'.round($tax1+$tax2+$tax3, 2).'</b></td><td class="right">'.price($mens_four[$i]).'</td><td class="right"><i>'.price($mens[$i]-$tax1-$tax2-$tax3-$mens_four[$i]).'</i></td></tr>';
 				}
 			}
 			else
@@ -505,8 +507,8 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 						{
 						case 0:
 							$tx1=23.7;
-							$tx1_1=22;
-							$tx1_2=1.7;
+							$tx1_1=23.7;
+							$tx1_2=0.0;
 							$tx2=0.30;
 							$tx3=0.48;
 							break;						
@@ -526,8 +528,8 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 							break;
 						case 3:
 							$tx1=23.7;
-							$tx1_1=22.0;
-							$tx1_2=1.7;
+							$tx1_1=23.7;
+							$tx1_2=0.0;
 							$tx2=0.30;
 							$tx3=0.48;
 							break;
