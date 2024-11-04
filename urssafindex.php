@@ -239,20 +239,44 @@ print '<div class="fichecenter"><div class="fichethirdleft">';
 			{
 				case $year  == "2008":
 				case $year  == "2009":
-				case $year  == "2010":
-				case $year  == "2011":
-				case $year  == "2012":
-				case $year  == "2013":
-				case $year  == "2014":
-				case $year  == "2015":
-				case $year  == "2016":
-					$tx1=25.1;
-					$tx1_1=23.4;
-					$tx1_2=1.7;
-					$tx2=0.30;
+								case $year  == "2010":
+					$tx1=23;
+					$tx1_1=23;
+					$tx1_2=0.00;
+					$tx2=0.00;
 					$tx3=0.00;
 					break;
-					
+				case $year  == "2011":
+				case $year  == "2012":
+					$tx1=23;
+					$tx1_1=23;
+					$tx1_2=0.0;
+					$tx2=0.3;
+					$tx3=0.00;
+					break;
+				case $year  == "2013":
+				case $year  == "2014":
+					$tx1=26.3;
+					$tx1_1=26.3;
+					$tx1_2=0.0;
+					$tx2=0.3;
+					$tx3=0.00;
+					break;
+				case $year  == "2015":
+				
+					$tx1=24.6;
+					$tx1_1=24.6;
+					$tx1_2=0.0;
+					$tx2=0.3;
+					$tx3=0.48;
+					break;
+				case $year  == "2016":
+					$tx1=24.8;
+					$tx1_1=24.8;
+					$tx1_2=0.0;
+					$tx2=0.3;
+					$tx3=0.48;
+					break;
 				case $year  == "2017":
 					$tx1=24.4;
 					$tx1_1=22.7;
