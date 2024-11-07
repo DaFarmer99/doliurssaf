@@ -1,7 +1,10 @@
 # URSSAF FOR [DOLIBARR ERP CRM](https://www.dolibarr.org)
 
 ## Features
+Donne un détail du CA avec clacul des taxes en rapport pour simplifier la déclaration mensuel / trimestrielle du CA à l'urssaf pour les auto entrepreneur de service BIC.
 
+
+Attention une facture doit contenir un seul type de ligne détail soit des produits soit des services mais pas les deux pour que la séparation des encaissement par type de ligne détail puisse fonctionner avec la délcaration urssaf
 Description of the module...
 
 <!--
