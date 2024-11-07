@@ -1,0 +1,48 @@
+# Copyright (C) 2021 Denieul Guillaume <guillaume.denieul@ordilogique.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#
+# Générique
+#
+
+# Module label 'ModuleURSSAFName'
+ModuleDOLIURSSAFName = DOLIURSSAF
+# Module description 'ModuleURSSAFDesc'
+ModuleDOLIURSSAFDesc = Module de sythèse des encaissements pour simplifier la déclaration de l'URSSAF pour les Micro Entreprises françaises de services.
+
+#
+# Page d'administration
+#
+DOLIURSSAFSetup = Configuration du module URSSAF
+Settings = Réglages
+DOLIURSSAFSetupPage = Page de configuration du module URSSAF
+
+#
+# Page À propos
+#
+About = À propos
+DOLIURSSAFAbout = À propos de URSSAF
+DOLIURSSAFAboutPage = Page à propos de URSSAF
+
+#
+# Page d'exemple
+#
+MyPageName = Nom de ma page
+
+#
+# Box d'exemple
+#
+MyWidget = Mon widget
+MyWidgetDescription = Description de mon widget
