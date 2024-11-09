@@ -664,10 +664,34 @@ foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 	}
 }
 
-if (empty($setupnotempty)) {
+/*if (empty($setupnotempty)) {
 	print '<br>'.$langs->trans("NothingToSetup");
-}
+}*/
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre">';
+print '<th class="center">Période</th>
+		<th class="right">Serv(BIC)<br><font size=-2><b>518</b></font></th>
+		<th class="right">Prod(BIC)<br><font size=-2><b>508</b></font></th>
+		<th class="right">IR Serv(BIC)<br><font size=-2><b>520</b></font></th>
+		<th class="right">IR Prod(BIC)<br><font size=-2><b>510</b></font></th>
+		<th class="right">Forma.(CMA)<br><font size=-2><b>572</b></font></th>
+		<th class="right">Prod(CMA)<br><font size=-2><b>060</b></font></th>
+		<th class="right">Serv(CMA)<br><font size=-2><b>061</b></font></th></tr>';
+		
+		$sqltx = "SELECT periode, tx_508, tx_518, tx_510, tx_520, tx_572, tx_060, tx_061";
+		$sqltx.= " FROM ".MAIN_DB_PREFIX."custom_urssaf;";
 
+		$resql_tx = $db->query($sqltx);
+		$nb_tx = $db->num_rows($resql_tx);
+		
+		$i = 0;
+		while ($i < $nb_tx)
+		{
+			$obj_tx = $db->fetch_object($resql_tx);
+			print '<tr><td class="right">'.$obj_tx->periode.'</td><td class="right">'.$obj_tx->tx_518.'</td><td class="right">'.$obj_tx->tx_508.'</td><td class="right">'.$obj_tx->tx_520.'</td><td class="right">'.$obj_tx->tx_510.'</td><td class="right">'.$obj_tx->tx_572.'</td><td class="right">'.$obj_tx->tx_060.'</td><td class="right">'.$obj_tx->tx_061.'</td></tr>';
+			$i++;
+		}
+		print '</table>';
 // Page end
 print dol_get_fiche_end();
 

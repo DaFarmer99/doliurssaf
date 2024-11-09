@@ -47,7 +47,8 @@ function print_entete( int $vue, array $tab_tx)
 		$indic="Trimestriel";
 	else
 		$indic="Mensuel";
-		
+		print '<table class="noborder centpercent">';
+		print '<tr class="liste_titre">';
 		print '<th class="right"></th><th class="center">CA<br><b>'.$indic.'</b></th>
 		<th class="right">CA<br>Serv</th>
 		<th class="right">CA<br>Prod</th>
@@ -116,7 +117,7 @@ print '<div class="fichecenter">';
 	{
 		$tab_tx[$trimestre]= array();
 		// recup des taux de l'année et du trimestre
-		$sqltx = "SELECT periode, tx_508, tx_518, tx_510, tx_520, tx_572, tx_060, tx_061";
+		$sqltx = "SELECT tx_508, tx_518, tx_510, tx_520, tx_572, tx_060, tx_061";
 		$sqltx.= " FROM ".MAIN_DB_PREFIX."custom_urssaf";
 		$sqltx.= " WHERE periode ='".$year."-".$trimestre."'";
 		$resql_tx = $db->query($sqltx);
@@ -324,8 +325,6 @@ if ($resql)
 /*******************************************************************************************/
 
 
-	print '<table class="noborder centpercent">';
-	print '<tr class="liste_titre">';
 	print_entete($vue, $tab_tx);
 	// vue mensuelle
 	if($vue == 2)
