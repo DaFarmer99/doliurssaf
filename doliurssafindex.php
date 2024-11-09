@@ -41,7 +41,7 @@ $year=GETPOST("year",'int');
 $vue=GETPOST("vue",'int');
 
 
-function print_entete( int $vue)
+function print_entete( int $vue, array $tab_tx)
 {
 	if ($vue == 1)
 		$indic="Trimestriel";
@@ -62,10 +62,6 @@ function print_entete( int $vue)
 		<th class="right">CA Net</th></tr>';
 }
 
-function print_totaux()
-{
-	
-}
 if (empty($year))
 {
 	$year = strftime("%Y",dol_now());
@@ -74,11 +70,8 @@ if (empty($vue))
 {
 	$vue = 1;
 }
-
 $yearm1=$year-1;
 $yearp1=$year+1;
-
-
 
 $socid = GETPOST('socid', 'int');
 if (isset($user->socid) && $user->socid > 0) {
@@ -87,13 +80,12 @@ if (isset($user->socid) && $user->socid > 0) {
 }
 
 $max = 5;
-
 $form = new Form($db);
 $formfile = new FormFile($db);
 
 llxHeader("", $langs->trans("Déclaration URSSAF"));
 
-print load_fiche_titre($langs->trans("Déclaration URSSAF"), '', 'urssaf.png@urssaf');
+print load_fiche_titre($langs->trans("Déclaration URSSAF"), '', 'doliurssaf@doliurssaf');
 
 if ($vue == 1)
 {
@@ -107,35 +99,74 @@ else
 	$alt_vue_texte = "Trimestrielle";
 	$vue_alter = 1;
 }
-$vue_form='<br><table><tr><td><b>Vue</b></td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>'.$vue_texte.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/dolibarr/custom/doliurssaf/doliurssafindex.php?vue='.$vue_alter.'&year='.$year.'">'.$alt_vue_texte.'</a><br></td></tr>';
-$year_form='<tr><td><b>Selection de l\'année </td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><a href="/dolibarr/custom/doliurssaf/doliurssafindex.php?vue='.$vue.'&year='.$yearm1.'">&lt;&lt;</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>'.$year.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/dolibarr/custom/doliurssaf/doliurssafindex.php?vue='.$vue.'&year='.$yearp1.'">&gt;&gt;</a></td></tr></table><br><br>';
+$vue_form='<br><table><tr><td><b>Vue</b></td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>'.$vue_texte.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/custom/doliurssaf/doliurssafindex.php?vue='.$vue_alter.'&year='.$year.'">'.$alt_vue_texte.'</a><br></td></tr>';
+$year_form='<tr><td><b>Selection de l\'année </td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><a href="/custom/doliurssaf/doliurssafindex.php?vue='.$vue.'&year='.$yearm1.'">&lt;&lt;</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>'.$year.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/custom/doliurssaf/doliurssafindex.php?vue='.$vue.'&year='.$yearp1.'">&gt;&gt;</a></td></tr></table><br><br>';
 
 print $vue_form;
 print $year_form;
 print '<div class="fichecenter">';
 
-// recup des taux de l'année
-$sqltx = "SELECT quarter, tx_508, tx_518, tx_510, tx_520, tx_572, tx_060, tx_061";
-$sqltx.= " FROM ".MAIN_DB_PREFIX."custom_urssaf";
-$sqltx.= " WHERE year ='".$year."'";
-$resql_tx = $db->query($sqltx);
-$tab_tx[] = 0;
-$i = 0;
 
-while ($i < 4)
-{
-	$obj = $db->fetch_object($resql_tx);
-	$tab_tx[$i]= array();
-	$tab_tx[$i]['tx_508']= $obj->tx_508;
-	$tab_tx[$i]['tx_518']= $obj->tx_518;
-	$tab_tx[$i]['tx_510']= $obj->tx_510;
-	$tab_tx[$i]['tx_520']= $obj->tx_520;
-	$tab_tx[$i]['tx_572']= $obj->tx_572;
-	$tab_tx[$i]['tx_060']= $obj->tx_060;
-	$tab_tx[$i]['tx_061']= $obj->tx_061;
-	$i++;
-}
-
+/*****************************************************/
+/* Initialisation de la table des taux par trimestre */
+/*****************************************************/
+	$tab_tx= array();
+	$trimestre = 4;
+	while ($trimestre > 0)
+	{
+		$tab_tx[$trimestre]= array();
+		// recup des taux de l'année et du trimestre
+		$sqltx = "SELECT periode, tx_508, tx_518, tx_510, tx_520, tx_572, tx_060, tx_061";
+		$sqltx.= " FROM ".MAIN_DB_PREFIX."custom_urssaf";
+		$sqltx.= " WHERE periode ='".$year."-".$trimestre."'";
+		$resql_tx = $db->query($sqltx);
+		$nb_tx = $db->num_rows($resql_tx);
+		
+		// on a trouvé le taux renseigné dans la table
+		if ($nb_tx > 0)
+		{
+			$obj = $db->fetch_object($resql_tx);
+			$tab_tx[$trimestre]['tx_508']= $obj->tx_508;
+			$tab_tx[$trimestre]['tx_518']= $obj->tx_518;
+			$tab_tx[$trimestre]['tx_510']= $obj->tx_510;
+			$tab_tx[$trimestre]['tx_520']= $obj->tx_520;
+			$tab_tx[$trimestre]['tx_572']= $obj->tx_572;
+			$tab_tx[$trimestre]['tx_060']= $obj->tx_060;
+			$tab_tx[$trimestre]['tx_061']= $obj->tx_061;
+			//print "Trim : ".$trimestre."->518: ".$obj->tx_518."\n<br>";
+		}
+		// on récupère le taux le plus proche dans le passé
+		else
+		{
+			for ($annee = $year; $annee > '2007'; $annee--)
+			{
+				$trimestre3 = $trimestre;
+				if ($annee < $year) $trimestre3 = 4;
+				for($trimestre2= $trimestre3; $trimestre2 > 0 ; $trimestre2--)
+				{
+					$sqltx = "SELECT periode, tx_508, tx_518, tx_510, tx_520, tx_572, tx_060, tx_061";
+					$sqltx.= " FROM ".MAIN_DB_PREFIX."custom_urssaf";
+					$sqltx.= " WHERE periode ='".$annee."-".$trimestre2."'";
+					$resql_tx = $db->query($sqltx);
+					$nb_tx = $db->num_rows($resql_tx);
+					
+					if ($nb_tx > 0) break;
+				} 
+				if ($nb_tx > 0) break;
+			}
+			$obj = $db->fetch_object($resql_tx);
+			$tab_tx[$trimestre]['tx_508']= $obj->tx_508;
+			$tab_tx[$trimestre]['tx_518']= $obj->tx_518;
+			$tab_tx[$trimestre]['tx_510']= $obj->tx_510;
+			$tab_tx[$trimestre]['tx_520']= $obj->tx_520;
+			$tab_tx[$trimestre]['tx_572']= $obj->tx_572;
+			$tab_tx[$trimestre]['tx_060']= $obj->tx_060;
+			$tab_tx[$trimestre]['tx_061']= $obj->tx_061;
+			//print "Trim : ".$trimestre."->518: ".$obj->tx_518."\n<br>";
+		}
+		$trimestre--;
+	}
+	
 // recup des paiements et cumul
 $sql = "SELECT DISTINCT llx_paiement.`rowid`, llx_paiement.datep as datep, llx_paiement.amount as amount, llx_facturedet.`product_type` as type";
 $sql.= " FROM llx_paiement RIGHT JOIN llx_paiement_facture ON llx_paiement_facture.`fk_paiement` = llx_paiement.`rowid` RIGHT JOIN llx_facturedet ON llx_facturedet.`fk_facture` = llx_paiement_facture.`fk_facture`";
@@ -149,10 +180,23 @@ if ($resql)
 	$trim_prod[] = 0;
 	$mens_serv[] = 0;
 	$mens_prod[] = 0;
-
+	for ($i=1;$i<13;$i++)
+	{
+		$mens_serv[$i] = 0;
+		$mens_prod[$i] = 0;
+		$mens_four[$i] = 0;
+	}
+	for ($i=1;$i<5;$i++)
+	{
+		$trim_serv[$i] = 0;
+		$trim_prod[$i] = 0;
+		$trim_four[$i] = 0;
+	}
 		
 	$num = $db->num_rows($resql);
+	echo "Nombre de lignes de règlements ".$num;
 	
+	// Boucle sur la liste des règlements de la période
 	$i = 0;
 	while ($i < $num)
 	{
@@ -168,22 +212,22 @@ if ($resql)
 				case "01":
 				case "02":
 				case "03":
-					$trim_serv[0] += $montant;
+					$trim_serv[1] += $montant;
 					break;
 				case "04":
 				case "05":
 				case "06":
-					$trim_serv[1] += $montant;
+					$trim_serv[2] += $montant;
 					break;
 				case "07":
 				case "08":
 				case "09":
-					$trim_serv[2] += $montant;
+					$trim_serv[3] += $montant;
 					break;
 				case "10":
 				case "11":
 				case "12":
-					$trim_serv[3] += $montant;
+					$trim_serv[4] += $montant;
 					break;
 			}
 			$mens_serv[$month] += $montant;
@@ -196,27 +240,27 @@ if ($resql)
 				case "01":
 				case "02":
 				case "03":
-					$trim_prod[0] += $montant;
+					$trim_prod[1] += $montant;
 					break;
 				case "04":
 				case "05":
 				case "06":
-					$trim_prod[1] += $montant;
+					$trim_prod[2] += $montant;
 					break;
 				case "07":
 				case "08":
 				case "09":
-					$trim_prod[2] += $montant;
+					$trim_prod[3] += $montant;
 					break;
 				case "10":
 				case "11":
 				case "12":
-					$trim_prod[3] += $montant;
+					$trim_prod[4] += $montant;
 					break;
 			}
 			$mens_prod[$month] += $montant;
-			$i++;
 		}
+		$i++;
 	}
 
 	/*Cumul des dépenses fournisseurs */
@@ -225,9 +269,7 @@ if ($resql)
 	$sql_four.= " WHERE datep between '".$year."/01/01 00:00:00' and '".$year."/12/31 23:59:59'";
 	$resql_four = $db->query($sql_four);
 		
-	$trim_four[] = 0;
-	$mens_four[] = 0;	
-	
+
 	if ($resql_four)
 	{
 		$num_four = $db->num_rows($resql_four);	
@@ -242,22 +284,22 @@ if ($resql)
 				case "01":
 				case "02":
 				case "03":
-					$trim_four[0] += $obj_four->amount;
+					$trim_four[1] += $obj_four->amount;
 					break;
 				case "04":
 				case "05":
 				case "06":
-					$trim_four[1] += $obj_four->amount;
+					$trim_four[2] += $obj_four->amount;
 					break;
 				case "07":
 				case "08":
 				case "09":
-					$trim_four[2] += $obj_four->amount;
+					$trim_four[3] += $obj_four->amount;
 					break;
 				case "10":
 				case "11":
 				case "12":
-					$trim_four[3] += $obj_four->amount;
+					$trim_four[4] += $obj_four->amount;
 					break;	
 			}
 			$mens_four[$month] += $obj_four->amount;
@@ -272,15 +314,19 @@ if ($resql)
 	$tot_an_tax520=0.0;
 	$tot_an_tax510=0.0;
 	$tot_an_tax572=0.0;
-	$tot_an_tax061=0.0;
+	$tot_an_tax060=0.0;
 	$tot_an_tax061=0.0;
 	$tot_an_four=0.0;
 		
+
+/*******************************************************************************************/
+/* Affichage des résultats sous deux formes différentes : mensuelle ou trimestrielle       */
+/*******************************************************************************************/
+
+
 	print '<table class="noborder centpercent">';
 	print '<tr class="liste_titre">';
-	
-
-	print_entete($vue);
+	print_entete($vue, $tab_tx);
 	// vue mensuelle
 	if($vue == 2)
 	{
@@ -292,24 +338,23 @@ if ($resql)
 				case 1:
 				case 2:
 				case 3:
-					$quarter = 0;
+					$quarter = 1;
 					break;						
 				case 4:
 				case 5:
 				case 6:
-					$quarter = 1;
+					$quarter = 2;
 					break;						
 				case 7:
 				case 8:
 				case 9:
-					$quarter = 2;
+					$quarter = 3;
 					break;
 				case 10:
 				case 11:
 				case 12:
-					$quarter = 3;
+					$quarter = 4;
 					break;
-
 			}
 				
 			$tax518=($mens_serv[$i]*$tab_tx[$quarter]['tx_518']/100);
@@ -319,7 +364,6 @@ if ($resql)
 			$tax508=($mens_prod[$i]*$tab_tx[$quarter]['tx_508']/100);
 			$tax510=($mens_prod[$i]*$tab_tx[$quarter]['tx_510']/100);
 			$tax060=$mens_prod[$i]*$tab_tx[$quarter]['tx_060']/100;
-			
 			$tot_an_tax518+=$tax518;
 			$tot_an_tax520+=$tax520;
 			$tot_an_tax572+=$tax572;
@@ -327,7 +371,6 @@ if ($resql)
 			$tot_an_tax508+=$tax508;
 			$tot_an_tax510+=$tax510;
 			$tot_an_tax060+=$tax060;
-			
 			$tot_an_CA_serv+=$mens_serv[$i];
 			$tot_an_CA_prod+=$mens_prod[$i];
 			$tot_an_four+=$mens_four[$i];
@@ -350,9 +393,8 @@ if ($resql)
 	}
 	else
 	{
-		for($i=0; $i<4; $i++)
+		for($i=1; $i<5; $i++)
 		{
-			$j=$i+1;
 			$tax518=round($trim_serv[$i]*$tab_tx[$i]['tx_518']/100);
 			$tax520=round($trim_serv[$i]*$tab_tx[$i]['tx_520']/100);
 			$tax572=round($trim_serv[$i]*$tab_tx[$i]['tx_572']/100);
@@ -371,7 +413,7 @@ if ($resql)
 			$tot_an_CA_prod+=$trim_prod[$i];
 			$tot_an_four+=$trim_four[$i];
 			print '<tr class="right">
-			<td>'.$j.'</td>
+			<td>'.$i.'</td>
 			<td class="right"><b>'.price($trim_serv[$i]+$trim_prod[$i]).'</b></td>
 			<td class="right">'.price($trim_serv[$i]).'</td>
 			<td class="right">'.price($trim_prod[$i]).'</td>

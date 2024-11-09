@@ -220,7 +220,7 @@ $linkback = '<a href="'.($backtopage ? $backtopage : DOL_URL_ROOT.'/admin/module
 print load_fiche_titre($langs->trans($page_name), $linkback, 'title_setup');
 
 // Configuration header
-$head = doliurssafAdminPrepareHead();
+//$head = doliurssafAdminPrepareHead();
 print dol_get_fiche_head($head, 'settings', $langs->trans($page_name), -1, "doliurssaf@doliurssaf");
 
 // Setup page goes here
