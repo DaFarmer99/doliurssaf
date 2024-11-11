@@ -70,7 +70,7 @@ class moddoliurssaf extends DolibarrModules
 		$this->editor_url = 'https://www.ordilogique.fr';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '2024.11.09-01';
+		$this->version = '2024.11.11-01';
 		// Url to the file with your last numberversion of this module
 		//$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
@@ -240,33 +240,16 @@ class moddoliurssaf extends DolibarrModules
 		$sql = array_merge($sql, array(
 			"DROP TABLE IF EXISTS ".MAIN_DB_PREFIX."custom_urssaf",
 			"CREATE TABLE ".MAIN_DB_PREFIX."custom_urssaf (  `dates` datetime NOT NULL DEFAULT current_timestamp(),  `periode` varchar(7) NOT NULL,  `tx_518` float NOT NULL,  `tx_508` float NOT NULL,  `tx_520` float NOT NULL,  `tx_510` float NOT NULL,  `tx_572` float NOT NULL,  `tx_060` float NOT NULL,  `tx_061` float NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;",
-			"INSERT INTO ".MAIN_DB_PREFIX."custom_urssaf (`dates`, `periode`, `tx_518`, `tx_508`, `tx_520`, `tx_510`, `tx_572`, `tx_060`, `tx_061`) VALUES
-('2024-11-06 14:21:41', '2008-1', 23, 12.3, 0, 0, 0, 0.22, 0),
-('2024-11-06 14:21:41', '2011-1', 23, 12.3, 0, 0, 0.3, 0.22, 0),
-('2024-11-06 14:21:41', '2013-1', 26.3, 12.3, 0, 0, 0.3, 0.22, 0),
-('2024-11-06 14:21:41', '2015-1', 24.6, 12.3, 0, 0, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2016-1', 24.8, 12.3, 0, 0, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2017-1', 24.4, 14.1, 0, 0, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2018-1', 23.7, 13.8, 0, 0, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2018-2', 22, 12.8, 0, 0, 0.3, 0.22, 0),
-('2024-11-06 14:21:41', '2018-3', 22, 12.8, 0, 0, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2018-4', 23.7, 13.8, 0, 0, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2019-1', 23.7, 13.8, 0, 0, 0.3, 0.22, 0),
-('2024-11-06 14:21:41', '2020-1', 23.7, 13.8, 0, 0, 0.3, 0.22, 0),
-('2024-11-06 14:21:41', '2021-1', 23.7, 13.8, 0, 0, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2022-1', 22, 12.8, 1.7, 1, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2022-4', 21.2, 12.3, 1.7, 1, 0.3, 0.22, 0.48),
-('2024-11-06 14:21:41', '2023-1', 21.2, 12.3, 1.7, 1, 0.3, 0.22, 0.48);",
+			"INSERT INTO ".MAIN_DB_PREFIX."custom_urssaf (`dates`, `periode`, `tx_518`, `tx_508`, `tx_520`, `tx_510`, `tx_572`, `tx_060`, `tx_061`) 
+			VALUES ('2024-11-06 14:21:41', '2008-1', 23, 12.3, 0, 0, 0, 0.22, 0), ('2024-11-06 14:21:41', '2011-1', 23, 12.3, 0, 0, 0.3, 0.22, 0), ('2024-11-06 14:21:41', '2013-1', 26.3, 12.3, 0, 0, 0.3, 0.22, 0), ('2024-11-06 14:21:41', '2015-1', 24.6, 12.3, 0, 0, 0.3, 0.22, 0.48), ('2024-11-06 14:21:41', '2016-1', 24.8, 12.3, 0, 0, 0.3, 0.22, 0.48), ('2024-11-06 14:21:41', '2017-1', 24.4, 14.1, 0, 0, 0.3, 0.22, 0.48), ('2024-11-06 14:21:41', '2018-1', 23.7, 13.8, 0, 0, 0.3, 0.22, 0.48), ('2024-11-06 14:21:41', '2018-2', 22, 12.8, 0, 0, 0.3, 0.22, 0), ('2024-11-06 14:21:41', '2018-3', 22, 12.8, 0, 0, 0.3, 0.22, 0.48), ('2024-11-06 14:21:41', '2018-4', 23.7, 13.8, 0, 0, 0.3, 0.22, 0.48), ('2024-11-06 14:21:41', '2019-1', 23.7, 13.8, 0, 0, 0.3, 0.22, 0), ('2024-11-06 14:21:41', '2021-1', 23.7, 13.8, 0, 0, 0.3, 0.22, 0.48), ('2024-11-06 14:21:41', '2022-1', 22, 12.8, 1.7, 1, 0.3, 0.22, 0.48), ('2024-11-06 14:21:41', '2022-4', 21.2, 12.3, 1.7, 1, 0.3, 0.22, 0.48);",			
 			"ALTER TABLE ".MAIN_DB_PREFIX."custom_urssaf ADD PRIMARY KEY (`periode`);"));
-		
 		
 		// Document templates
 		$moduledir = 'doliurssaf';
 		$myTmpObjects = array();
 		
-
-		foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
-			
+		foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) 
+		{	
 			if ($myTmpObjectArray['includerefgeneration']) {
 				$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/doliurssaf/template_tests.odt';
 				$dirodt = DOL_DATA_ROOT.'/doctemplates/doliurssaf';
@@ -301,7 +284,6 @@ class moddoliurssaf extends DolibarrModules
 	public function remove($options = '')
 	{
 		$query="DROP TABLE IF EXISTS `".MAIN_DB_PREFIX."custom_urssaf`;";
-		
 		$sql = array();
 		$sql = array_merge($sql, array(
 		"DROP TABLE IF EXISTS `".MAIN_DB_PREFIX."custom_urssaf`;"));

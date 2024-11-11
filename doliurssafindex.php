@@ -100,8 +100,8 @@ else
 	$alt_vue_texte = "Trimestrielle";
 	$vue_alter = 1;
 }
-$vue_form='<br><table><tr><td><b>Vue</b></td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>'.$vue_texte.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/custom/doliurssaf/doliurssafindex.php?vue='.$vue_alter.'&year='.$year.'">'.$alt_vue_texte.'</a><br></td></tr>';
-$year_form='<tr><td><b>Selection de l\'année </td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><a href="/custom/doliurssaf/doliurssafindex.php?vue='.$vue.'&year='.$yearm1.'">&lt;&lt;</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>'.$year.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/custom/doliurssaf/doliurssafindex.php?vue='.$vue.'&year='.$yearp1.'">&gt;&gt;</a></td></tr></table><br><br>';
+$vue_form='<br><table><tr><td><b>Vue</b></td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>'.$vue_texte.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'?vue='.$vue_alter.'&year='.$year.'">'.$alt_vue_texte.'</a><br></td></tr>';
+$year_form='<tr><td><b>Selection de l\'année </td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><a href="'.$_SERVER['PHP_SELF'].'?vue='.$vue.'&year='.$yearm1.'">&lt;&lt;</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>'.$year.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'?vue='.$vue.'&year='.$yearp1.'">&gt;&gt;</a></td></tr></table><br><br>';
 
 print $vue_form;
 print $year_form;

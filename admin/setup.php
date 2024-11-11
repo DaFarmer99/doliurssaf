@@ -68,6 +68,9 @@ if (!$user->admin) {
 // Parameters
 $action = GETPOST('action', 'aZ09');
 $backtopage = GETPOST('backtopage', 'alpha');
+$act = GETPOST('act');
+
+$backtopage = GETPOST('backtopage', 'alpha');
 
 $value = GETPOST('value', 'alpha');
 $label = GETPOST('label', 'alpha');
@@ -221,7 +224,7 @@ print load_fiche_titre($langs->trans($page_name), $linkback, 'title_setup');
 
 // Configuration header
 //$head = doliurssafAdminPrepareHead();
-print dol_get_fiche_head($head, 'settings', $langs->trans($page_name), -1, "doliurssaf@doliurssaf");
+//print dol_get_fiche_head($head, 'settings', $langs->trans($page_name), -1, "doliurssaf@doliurssaf");
 
 // Setup page goes here
 echo '<span class="opacitymedium">'.$langs->trans("DOLIURSSAFSetupPage").'</span><br><br>';
@@ -397,7 +400,7 @@ if ($action == 'edit') {
 		print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
 		print '</div>';
 	} else {
-		print '<br>'.$langs->trans("NothingToSetup");
+		//print '<br>'.$langs->trans("NothingToSetup");
 	}
 }
 
@@ -659,7 +662,6 @@ foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 				}
 			}
 		}
-
 		print '</table>';
 	}
 }
@@ -667,6 +669,31 @@ foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 /*if (empty($setupnotempty)) {
 	print '<br>'.$langs->trans("NothingToSetup");
 }*/
+
+if ($act == 'add') 
+{
+	$sqltx = "INSERT into ".MAIN_DB_PREFIX."custom_urssaf (periode, tx_508, tx_518, tx_510, tx_520, tx_572, tx_060, tx_061) VALUES ";
+	$sqltx.= "('".$_POST['periode']."', '".$_POST['tx_508']."', '".$_POST['tx_518']."', '".$_POST['tx_510']."', '".$_POST['tx_520']."', '".$_POST['tx_572']."', '".$_POST['tx_060']."', '".$_POST['tx_061']."');";
+	//print $sqltx."->";
+	$resql_tx = $db->query($sqltx);
+	//print $resql_tx."<br>" ;
+}
+
+
+if ($act == 'del') 
+{
+	
+	// Control a faire sur l'id valide ou non
+	$id = GETPOST('id');
+	
+	$sqltx = "DELETE FROM ".MAIN_DB_PREFIX."custom_urssaf where periode='".$id."';";
+	//print $sqltx."->";
+	$resql_tx = $db->query($sqltx);
+	//print $resql_tx."<br>" ;
+}
+
+
+
 print '<table class="noborder centpercent">';
 print '<tr class="liste_titre">';
 print '<th class="center">Période</th>
@@ -676,7 +703,8 @@ print '<th class="center">Période</th>
 		<th class="right">IR Prod(BIC)<br><font size=-2><b>510</b></font></th>
 		<th class="right">Forma.(CMA)<br><font size=-2><b>572</b></font></th>
 		<th class="right">Prod(CMA)<br><font size=-2><b>060</b></font></th>
-		<th class="right">Serv(CMA)<br><font size=-2><b>061</b></font></th></tr>';
+		<th class="right">Serv(CMA)<br><font size=-2><b>061</b></font></th>
+		<th class="right">Suppr.</th></tr>';
 		
 		$sqltx = "SELECT periode, tx_508, tx_518, tx_510, tx_520, tx_572, tx_060, tx_061";
 		$sqltx.= " FROM ".MAIN_DB_PREFIX."custom_urssaf;";
@@ -688,12 +716,41 @@ print '<th class="center">Période</th>
 		while ($i < $nb_tx)
 		{
 			$obj_tx = $db->fetch_object($resql_tx);
-			print '<tr><td class="right">'.$obj_tx->periode.'</td><td class="right">'.$obj_tx->tx_518.'</td><td class="right">'.$obj_tx->tx_508.'</td><td class="right">'.$obj_tx->tx_520.'</td><td class="right">'.$obj_tx->tx_510.'</td><td class="right">'.$obj_tx->tx_572.'</td><td class="right">'.$obj_tx->tx_060.'</td><td class="right">'.$obj_tx->tx_061.'</td></tr>';
+			print '<tr><td class="right">'.$obj_tx->periode.'</td><td class="right">'.$obj_tx->tx_518.'</td><td class="right">'.$obj_tx->tx_508.'</td><td class="right">'.$obj_tx->tx_520.'</td><td class="right">'.$obj_tx->tx_510.'</td><td class="right">'.$obj_tx->tx_572.'</td><td class="right">'.$obj_tx->tx_060.'</td><td class="right">'.$obj_tx->tx_061.'</td><td class="right"><a href="?act=del&id='.$obj_tx->periode.'">X</a></td></tr>';
 			$i++;
 		}
 		print '</table>';
+		print "<b>Nouveaux taux:</b><br><i>Préremplissage avec les anciennes valeurs</i>";
+		
+
+
+print '<form action="?act=add" method="POST"><table class="noborder centpercent">';
+print '<tr class="liste_titre">';
+print '<th class="center">Période<br><font size=-2><b>PK - Unique</font></b></th>
+		<th class="center">Serv(BIC)<br><font size=-2><b>518</b></font></th>
+		<th class="center">Prod(BIC)<br><font size=-2><b>508</b></font></th>
+		<th class="center">IR Serv(BIC)<br><font size=-2><b>520</b></font></th>
+		<th class="center">IR Prod(BIC)<br><font size=-2><b>510</b></font></th>
+		<th class="center">Forma.(CMA)<br><font size=-2><b>572</b></font></th>
+		<th class="center">Prod(CMA)<br><font size=-2><b>060</b></font></th>
+		<th class="center">Serv(CMA)<br><font size=-2><b>061</b></font></th>
+		<th class="center"></th></tr>';
+
+$year = date("Y");  
+$quarter = ceil(date("m", time())/3);
+			
+print '<tr><td class="right"><input name="periode" type="text" size="10" value="'.$year.'-'.$quarter.'"></td>
+		<td class="right"><input name="tx_518" type="number" size="5" step="0.01" value='.$obj_tx->tx_518.'></td>
+		<td class="right"><input name="tx_508" type="number" size="5" step="0.01" value='.$obj_tx->tx_508.'></td>
+		<td class="right"><input name="tx_520" size="5" type="number" step="0.01" value='.$obj_tx->tx_520.'></td>
+		<td class="right"><input name="tx_510" type="number" size="5" step="0.01" value='.$obj_tx->tx_510.'></td>
+		<td class="right"><input name="tx_572" type="number" size="5" step="0.01" value='.$obj_tx->tx_572.'></td>
+		<td class="right"><input name="tx_060" type="number" step="0.01" size="5" value='.$obj_tx->tx_060.'></td>
+		<td class="right"><input name="tx_061" type="number" size="5" step="0.01" value ='.$obj_tx->tx_061.'></td>
+		<td><button type="post">Ajouter</button></td></tr>';
+print '</table></form>';
 // Page end
 print dol_get_fiche_end();
-
 llxFooter();
+$db->free($resql_tx);
 $db->close();
