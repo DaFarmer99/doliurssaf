@@ -19,3 +19,7 @@ Simplificationdu code.
 Ajout de la possibilité de gérer les taux depuis l'interface d'admin (Ajout / Suppression)
 Mise à jour des taux (suppression des changements 2023 et 2020 
 Changement de la génération de l'url des changement de vue et d'annéee
+
+
+## 2024-11-14
+Ajout de la vue condensée

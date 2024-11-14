@@ -43,10 +43,14 @@ $vue=GETPOST("vue",'int');
 
 function print_entete( int $vue, array $tab_tx)
 {
-	if ($vue == 1)
-		$indic="Trimestriel";
+	
+	if ($vue == 2)
+	{$indic = "Mensuel";}
 	else
-		$indic="Mensuel";
+	{$indic = "Trimestriel";}
+	
+	if ($vue == 1 || $vue == 2)
+	{
 		print '<table class="noborder centpercent">';
 		print '<tr class="liste_titre">';
 		print '<th class="right"></th><th class="center">CA<br><b>'.$indic.'</b></th>
@@ -61,6 +65,13 @@ function print_entete( int $vue, array $tab_tx)
 		<th class="right">Serv(CMA)<br><font size=-2><b>061</b> - <i>'.$tab_tx['1']['tx_061'].' %</i></font></th>
 		<th class="right">Total Taxes</th><th class="right">Achats</th>
 		<th class="right">CA Net</th></tr>';
+	}
+	else
+	{
+		print '<table class="noborder centpercent">';
+		print '<tr class="liste_titre">';
+		print '<th class="right"></th><th class="center">CA<br><b>'.$indic.'</b></th><th class="right">CA<br>Serv</th><th class="right">CA<br>Prod</th><th class="right">Total Taxes</th><th class="right">Achats</th><th class="right">CA Net</th></tr>';
+	}
 }
 
 if (empty($year))
@@ -69,7 +80,7 @@ if (empty($year))
 }
 if (empty($vue))
 {
-	$vue = 1;
+	$vue = 0;
 }
 $yearm1=$year-1;
 $yearp1=$year+1;
@@ -88,19 +99,8 @@ llxHeader("", $langs->trans("Déclaration URSSAF"));
 
 print load_fiche_titre($langs->trans("Déclaration URSSAF"), '', 'doliurssaf@doliurssaf');
 
-if ($vue == 1)
-{
-	$vue_texte = "Trimestrielle";
-	$alt_vue_texte = "Mensuelle";
-	$vue_alter = 2;
-}
-else
-{
-	$vue_texte = "Mensuelle";
-	$alt_vue_texte = "Trimestrielle";
-	$vue_alter = 1;
-}
-$vue_form='<br><table><tr><td><b>Vue</b></td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b>'.$vue_texte.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'?vue='.$vue_alter.'&year='.$year.'">'.$alt_vue_texte.'</a><br></td></tr>';
+
+$vue_form='<br><table><tr><td><b>Vue</b>:</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'?vue=0&year='.$year.'">Résumée</a><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><a href="'.$_SERVER['PHP_SELF'].'?vue=1&year='.$year.'">Trimestrielle</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'?vue=2&year='.$year.'">Mensuelle</a><br></td></tr>';
 $year_form='<tr><td><b>Selection de l\'année </td><td><b>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><a href="'.$_SERVER['PHP_SELF'].'?vue='.$vue.'&year='.$yearm1.'">&lt;&lt;</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>'.$year.'</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="'.$_SERVER['PHP_SELF'].'?vue='.$vue.'&year='.$yearp1.'">&gt;&gt;</a></td></tr></table><br><br>';
 
 print $vue_form;
@@ -324,128 +324,158 @@ if ($resql)
 /* Affichage des résultats sous deux formes différentes : mensuelle ou trimestrielle       */
 /*******************************************************************************************/
 
-
+	// Entête conditionnelle selon la vue 
 	print_entete($vue, $tab_tx);
-	// vue mensuelle
-	if($vue == 2)
+	
+	
+	// vue mensuelle condensée
+	if($vue == 0)
 	{
-		for($i=1; $i<13;$i++)
-		{
-			$quarter = 0;
-			switch($i)
+			for($i=1; $i<5; $i++)
 			{
-				case 1:
-				case 2:
-				case 3:
-					$quarter = 1;
-					break;						
-				case 4:
-				case 5:
-				case 6:
-					$quarter = 2;
-					break;						
-				case 7:
-				case 8:
-				case 9:
-					$quarter = 3;
-					break;
-				case 10:
-				case 11:
-				case 12:
-					$quarter = 4;
-					break;
+				$tax518=round($trim_serv[$i]*$tab_tx[$i]['tx_518']/100);
+				$tax520=round($trim_serv[$i]*$tab_tx[$i]['tx_520']/100);
+				$tax572=round($trim_serv[$i]*$tab_tx[$i]['tx_572']/100);
+				$tax061=round($trim_serv[$i]*$tab_tx[$i]['tx_061']/100);
+				$tax508=round($trim_prod[$i]*$tab_tx[$i]['tx_508']/100);
+				$tax510=round($trim_prod[$i]*$tab_tx[$i]['tx_510']/100);
+				$tax060=round($trim_prod[$i]*$tab_tx[$i]['tx_060']/100);					
+				$tot_an_tax518+=$tax518;
+				$tot_an_tax508+=$tax508;
+				$tot_an_tax520+=$tax520;
+				$tot_an_tax520+=$tax510;
+				$tot_an_tax572+=$tax572;
+				$tot_an_tax060+=$tax060;
+				$tot_an_tax061+=$tax061;
+				$tot_an_CA_serv+=$trim_serv[$i];
+				$tot_an_CA_prod+=$trim_prod[$i];
+				$tot_an_four+=$trim_four[$i];
+				print '<tr class="right">
+				<td>'.$i.'</td>
+				<td class="right"><b>'.price($trim_serv[$i]+$trim_prod[$i]).'</b></td>
+				<td class="right">'.price($trim_serv[$i]).'</td>
+				<td class="right">'.price($trim_prod[$i]).'</td>
+				<td class="right"><b>'.round($tax518+$tax508+$tax520+$tax510+$tax572+$tax060+$tax061).'</b></td>
+				<td class="right">'.price($trim_four[$i]).'</td>
+				<td class="right"><i>'.price(round($trim_serv[$i]+$trim_prod[$i]-$tax518-$tax508-$tax520-$tax510-$tax572-$tax060-$tax061-$trim_four[$i], 2)).'</i></td></tr>';
 			}
-				
-			$tax518=($mens_serv[$i]*$tab_tx[$quarter]['tx_518']/100);
-			$tax520=($mens_serv[$i]*$tab_tx[$quarter]['tx_520']/100);
-			$tax572=$mens_serv[$i]*$tab_tx[$quarter]['tx_572']/100;
-			$tax061=$mens_serv[$i]*$tab_tx[$quarter]['tx_061']/100;
-			$tax508=($mens_prod[$i]*$tab_tx[$quarter]['tx_508']/100);
-			$tax510=($mens_prod[$i]*$tab_tx[$quarter]['tx_510']/100);
-			$tax060=$mens_prod[$i]*$tab_tx[$quarter]['tx_060']/100;
-			$tot_an_tax518+=$tax518;
-			$tot_an_tax520+=$tax520;
-			$tot_an_tax572+=$tax572;
-			$tot_an_tax061+=$tax061;
-			$tot_an_tax508+=$tax508;
-			$tot_an_tax510+=$tax510;
-			$tot_an_tax060+=$tax060;
-			$tot_an_CA_serv+=$mens_serv[$i];
-			$tot_an_CA_prod+=$mens_prod[$i];
-			$tot_an_four+=$mens_four[$i];
-			print '<tr class="oddeven">
-			<td class="left">'.$month_names[$i-1].'</td>
-			<td colspan="1" class="right"><b>'.price($mens_serv[$i]+$mens_prod[$i]).'</b></td>
-			<td class="right">'.price($mens_serv[$i]).'</td>
-			<td class="right">'.price($mens_prod[$i]).'</td>
-			<td class="right">'.round($tax518, 2).'</td>
-			<td class="right">'.round($tax508, 2).'</td>
-			<td class="right">'.round($tax520, 2).'</td>
-			<td class="right">'.round($tax510, 2).'</td>
-			<td class="right">'.round($tax572, 2).'</td>
-			<td class="right">'.round($tax060, 2).'</td>
-			<td class="right">'.round($tax061, 2).'</td>
-			<td class="right"><b>'.price(round($tax518+$tax508+$tax520+$tax510+$tax572+$tax060+$tax061, 2)).'</b></td>
-			<td class="right">'.price($mens_four[$i]).'</td>
-			<td class="right"><i>'.price(round($mens_serv[$i]+$mens_prod[$i]-$tax518-$tax508-$tax520-$tax510-$tax572-$tax060-$tax061-$mens_four[$i], 2)).'</i></td></tr>';
-		}
+			
+			// Totaux réduits
+			print '<tr class="left">
+			<td><b>Total</b></td>
+			<td colspan="1" class="right"><b>'.price($tot_an_CA_serv+$tot_an_CA_prod).'</b></td>
+			<td class="right">'.price($tot_an_CA_serv).'</td>
+			<td class="right">'.price($tot_an_CA_prod).'</td>
+			<td class="right"><b>'.round($tot_an_tax518+$tot_an_tax508+$tot_an_tax520+$tot_an_tax510+$tot_an_tax572+$tot_an_tax060+$tot_an_tax061).'</b></td>
+			<td class="right">'.price($tot_an_four).'</td>
+			<td class="right"><i>'.price(round($tot_an_CA_serv+$tot_an_CA_prod-$tot_an_tax518-$tot_an_tax508-$tot_an_tax520-$tot_an_tax510-$tot_an_tax572-$tot_an_tax060-$tot_an_tax061-$tot_an_four, 2)).'</i></td></tr>';
+			print '</table>';
 	}
 	else
 	{
-		for($i=1; $i<5; $i++)
+		//Trim détaillé
+		if($vue == 1)
 		{
-			$tax518=round($trim_serv[$i]*$tab_tx[$i]['tx_518']/100);
-			$tax520=round($trim_serv[$i]*$tab_tx[$i]['tx_520']/100);
-			$tax572=round($trim_serv[$i]*$tab_tx[$i]['tx_572']/100);
-			$tax061=round($trim_serv[$i]*$tab_tx[$i]['tx_061']/100);
-			$tax508=round($trim_prod[$i]*$tab_tx[$i]['tx_508']/100);
-			$tax510=round($trim_prod[$i]*$tab_tx[$i]['tx_510']/100);
-			$tax060=round($trim_prod[$i]*$tab_tx[$i]['tx_060']/100);					
-			$tot_an_tax518+=$tax518;
-			$tot_an_tax508+=$tax508;
-			$tot_an_tax520+=$tax520;
-			$tot_an_tax520+=$tax510;
-			$tot_an_tax572+=$tax572;
-			$tot_an_tax060+=$tax060;
-			$tot_an_tax061+=$tax061;
-			$tot_an_CA_serv+=$trim_serv[$i];
-			$tot_an_CA_prod+=$trim_prod[$i];
-			$tot_an_four+=$trim_four[$i];
-			print '<tr class="right">
-			<td>'.$i.'</td>
-			<td class="right"><b>'.price($trim_serv[$i]+$trim_prod[$i]).'</b></td>
-			<td class="right">'.price($trim_serv[$i]).'</td>
-			<td class="right">'.price($trim_prod[$i]).'</td>
-			<td class="right">'.round($tax518).'</td>
-			<td class="right">'.round($tax508).'</td>
-			<td class="right">'.round($tax520).'</td>
-			<td class="right">'.round($tax510).'</td>
-			<td class="right">'.round($tax572).'</td>
-			<td class="right">'.round($tax060).'</td>
-			<td class="right">'.round($tax061).'</td>
-			<td class="right"><b>'.round($tax518+$tax508+$tax520+$tax510+$tax572+$tax060+$tax061).'</b></td>
-			<td class="right">'.price($trim_four[$i]).'</td>
-			<td class="right"><i>'.price(round($trim_serv[$i]+$trim_prod[$i]-$tax518-$tax508-$tax520-$tax510-$tax572-$tax060-$tax061-$trim_four[$i], 2)).'</i></td></tr>';
+			for($i=1; $i<5; $i++)
+			{
+				$tax518=round($trim_serv[$i]*$tab_tx[$i]['tx_518']/100);
+				$tax520=round($trim_serv[$i]*$tab_tx[$i]['tx_520']/100);
+				$tax572=round($trim_serv[$i]*$tab_tx[$i]['tx_572']/100);
+				$tax061=round($trim_serv[$i]*$tab_tx[$i]['tx_061']/100);
+				$tax508=round($trim_prod[$i]*$tab_tx[$i]['tx_508']/100);
+				$tax510=round($trim_prod[$i]*$tab_tx[$i]['tx_510']/100);
+				$tax060=round($trim_prod[$i]*$tab_tx[$i]['tx_060']/100);					
+				$tot_an_tax518+=$tax518;
+				$tot_an_tax508+=$tax508;
+				$tot_an_tax520+=$tax520;
+				$tot_an_tax520+=$tax510;
+				$tot_an_tax572+=$tax572;
+				$tot_an_tax060+=$tax060;
+				$tot_an_tax061+=$tax061;
+				$tot_an_CA_serv+=$trim_serv[$i];
+				$tot_an_CA_prod+=$trim_prod[$i];
+				$tot_an_four+=$trim_four[$i];
+				print '<tr class="right">
+				<td>'.$i.'</td>
+				<td class="right"><b>'.price($trim_serv[$i]+$trim_prod[$i]).'</b></td><td class="right">'.price($trim_serv[$i]).'</td>
+				<td class="right">'.price($trim_prod[$i]).'</td><td class="right">'.round($tax518).'</td>
+				<td class="right">'.round($tax508).'</td><td class="right">'.round($tax520).'</td>
+				<td class="right">'.round($tax510).'</td><td class="right">'.round($tax572).'</td>
+				<td class="right">'.round($tax060).'</td><td class="right">'.round($tax061).'</td>
+				<td class="right"><b>'.round($tax518+$tax508+$tax520+$tax510+$tax572+$tax060+$tax061).'</b></td>
+				<td class="right">'.price($trim_four[$i]).'</td>
+				<td class="right"><i>'.price(round($trim_serv[$i]+$trim_prod[$i]-$tax518-$tax508-$tax520-$tax510-$tax572-$tax060-$tax061-$trim_four[$i], 2)).'</i></td></tr>';
+			}
 		}
-	}
-
-	print '<tr class="left">
-		<td><b>Total</b></td>
+		//Mensuelle détaillée
+		else
+		{
+			
+			for($i=1; $i<13;$i++)
+			{
+				$quarter = 0;
+				switch($i)
+				{
+					case 1:
+					case 2:
+					case 3:
+						$quarter = 1;
+						break;						
+					case 4:
+					case 5:
+					case 6:
+						$quarter = 2;
+						break;						
+					case 7:
+					case 8:
+					case 9:
+						$quarter = 3;
+						break;
+					case 10:
+					case 11:
+					case 12:
+						$quarter = 4;
+						break;
+				}
+				
+				$tax518=($mens_serv[$i]*$tab_tx[$quarter]['tx_518']/100);
+				$tax520=($mens_serv[$i]*$tab_tx[$quarter]['tx_520']/100);
+				$tax572=$mens_serv[$i]*$tab_tx[$quarter]['tx_572']/100;
+				$tax061=$mens_serv[$i]*$tab_tx[$quarter]['tx_061']/100;
+				$tax508=($mens_prod[$i]*$tab_tx[$quarter]['tx_508']/100);
+				$tax510=($mens_prod[$i]*$tab_tx[$quarter]['tx_510']/100);
+				$tax060=$mens_prod[$i]*$tab_tx[$quarter]['tx_060']/100;
+				$tot_an_tax518+=$tax518;
+				$tot_an_tax520+=$tax520;
+				$tot_an_tax572+=$tax572;
+				$tot_an_tax061+=$tax061;
+				$tot_an_tax508+=$tax508;
+				$tot_an_tax510+=$tax510;
+				$tot_an_tax060+=$tax060;
+				$tot_an_CA_serv+=$mens_serv[$i];
+				$tot_an_CA_prod+=$mens_prod[$i];
+				$tot_an_four+=$mens_four[$i];
+				print '<tr class="oddeven">
+				<td class="left">'.$month_names[$i-1].'</td>
+				<td colspan="1" class="right"><b>'.price($mens_serv[$i]+$mens_prod[$i]).'</b></td>
+				<td class="right">'.price($mens_serv[$i]).'</td><td class="right">'.price($mens_prod[$i]).'</td><td class="right">'.round($tax518, 2).'</td><td class="right">'.round($tax508, 2).'</td><td class="right">'.round($tax520, 2).'</td>
+				<td class="right">'.round($tax510, 2).'</td><td class="right">'.round($tax572, 2).'</td><td class="right">'.round($tax060, 2).'</td><td	class="right">'.round($tax061, 2).'</td>
+				<td class="right"><b>'.price(round($tax518+$tax508+$tax520+$tax510+$tax572+$tax060+$tax061, 2)).'</b></td>
+				<td class="right">'.price($mens_four[$i]).'</td>
+				<td class="right"><i>'.price(round($mens_serv[$i]+$mens_prod[$i]-$tax518-$tax508-$tax520-$tax510-$tax572-$tax060-$tax061-$mens_four[$i], 2)).'</i></td></tr>';
+			}
+		}
+		
+		// Totaux détaillés
+		print '<tr class="left"><td><b>Total</b></td>
 		<td colspan="1" class="right"><b>'.price($tot_an_CA_serv+$tot_an_CA_prod).'</b></td>
-		<td class="right">'.price($tot_an_CA_serv).'</td>
-		<td class="right">'.price($tot_an_CA_prod).'</td>
-		<td class="right">'.round($tot_an_tax518).'</td>
-		<td class="right">'.round($tot_an_tax508).'</td>
-		<td class="right">'.round($tot_an_tax520).'</td>
-		<td class="right">'.round($tot_an_tax510).'</td>
-		<td class="right">'.round($tot_an_tax572).'</td>
-		<td class="right">'.round($tot_an_tax060).'</td>
-		<td class="right">'.round($tot_an_tax061).'</td>
+		<td class="right">'.price($tot_an_CA_serv).'</td><td class="right">'.price($tot_an_CA_prod).'</td><td class="right">'.round($tot_an_tax518).'</td><td class="right">'.round($tot_an_tax508).'</td><td class="right">'.round($tot_an_tax520).'</td>
+		<td class="right">'.round($tot_an_tax510).'</td><td class="right">'.round($tot_an_tax572).'</td><td class="right">'.round($tot_an_tax060).'</td><td class="right">'.round($tot_an_tax061).'</td>
 		<td class="right"><b>'.round($tot_an_tax518+$tot_an_tax508+$tot_an_tax520+$tot_an_tax510+$tot_an_tax572+$tot_an_tax060+$tot_an_tax061).'</b></td>
 		<td class="right">'.price($tot_an_four).'</td>
 		<td class="right"><i>'.price(round($tot_an_CA_serv+$tot_an_CA_prod-$tot_an_tax518-$tot_an_tax508-$tot_an_tax520-$tot_an_tax510-$tot_an_tax572-$tot_an_tax060-$tot_an_tax061-$tot_an_four, 2)).'</i></td></tr>';
-	print '</table>';	
-
+		print '</table>';
+	}
 	$db->free($resql);
 	$db->free($resql_four);
 	$db->free($resql_tx);

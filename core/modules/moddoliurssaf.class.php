@@ -70,7 +70,7 @@ class moddoliurssaf extends DolibarrModules
 		$this->editor_url = 'https://www.ordilogique.fr';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-		$this->version = '2024.11.11-01';
+		$this->version = '2024.11.14-01';
 		// Url to the file with your last numberversion of this module
 		//$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
